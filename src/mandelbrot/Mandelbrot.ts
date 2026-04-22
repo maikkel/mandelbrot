@@ -1,3 +1,5 @@
+import { computeReferenceOrbit } from './referenceOrbit.ts';
+
 class Mandelbrot {
   canvas: HTMLCanvasElement | undefined;
   ctx: CanvasRenderingContext2D | null;
@@ -66,6 +68,16 @@ class Mandelbrot {
   set paletteInvert(value) {
     console.log('inv', value)
     this.#paletteInvert = value;
+    this.mandelbrot();
+  }
+
+  #usePerturbation = false;
+  get usePerturbation() {
+    return this.#usePerturbation;
+  }
+
+  set usePerturbation(value: boolean) {
+    this.#usePerturbation = value;
     this.mandelbrot();
   }
 
@@ -179,6 +191,11 @@ class Mandelbrot {
     if (!this.rendering) {
       this.rendering = true;
       // console.time('mandelbrot')
+
+      const refOrbit = this.#usePerturbation
+        ? computeReferenceOrbit(this.centerX, this.centerY, this.maxIter)
+        : null;
+
       const rowsPerWorker = Math.ceil(this.size / this.numWorkers);
       this.workers.forEach((worker, index) => {
         const startY = index * rowsPerWorker;
@@ -194,6 +211,9 @@ class Mandelbrot {
           paletteIndex: this.paletteIndex,
           maxIter: this.maxIter,
           invert: this.paletteInvert,
+          refOrbitZr: refOrbit?.Zr ?? null,
+          refOrbitZi: refOrbit?.Zi ?? null,
+          refOrbitLength: refOrbit?.length ?? 0,
         });
       })
     }

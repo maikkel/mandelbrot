@@ -40,6 +40,7 @@ const ui = (mandelbrot: Mandelbrot) => {
     }
   );
   mandelbrotFolder.addBinding(mandelbrot, 'paletteInvert', {label: 'Invert'})
+  mandelbrotFolder.addBinding(mandelbrot, 'usePerturbation', {label: 'Perturbation'})
   mandelbrotFolder.addBinding(mandelbrot, 'maxIter', {label: 'Iterations', min: 2, max: 10000, step: 1})
 
   const infoFolder = pane.addFolder({
